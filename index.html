@@ -4,58 +4,107 @@
 	<link type="text/css" rel="stylesheet" href="wordStyle.css"/>
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<script type="text/javascript">
-  var wordsObject = new Array();
-	var countObject = new Array();
+  var originalWords = new Array();
+	var guesses = new Array ();
+	var currentWord = "";
+	var mostRecentGuess = "";
 	
-	var originalWords = new Array();
-	var guesses = new Array ()
-	
-	// A good practice to use this to prevent queries from running
-	// before the entire pages has been loaded
-	//$(document).ready(function(){
-
-   // jQuery methods go here...
-
-//}); 
-	
-	
-function evaluateWord() {
+function clientSideChecks() {
 		
 		// Test 1 (client): Can the word be made from those letters?
+		mostRecentGuess = $(userinput).val();
 	
+		var isValid = checkAnagram(currentWord, mostRecentGuess);
+		
+		if (!isValid){
+			alert("That is not an anagram of " + currentWord);
+		}
+		
+		else {
+			
+		}
 		
 		// Test 2 (client): Has the word already been added to the table?
 		
 		// Test 3 (server): Does the word exist in the dictionary?
 	}
 	
-function requestWord() {
-//			//alert("I work");
-			$.post("getWord.php", "", function(data) { 
-			
-				 var word = $(data).find('Word').children().text();
-	
-				 if(wordsObject.indexOf(word) != -1) {
- 					//alert(word + " in wordsObject already.");
-					countObject[wordsObject.indexOf(word)] += 1;
-					var temp = $("#" + word).html();
-					$("#" + word).html(++temp);
- 						}
- 						//and set number to 1
- 				
-				else {
-					wordsObject.push(word);
-					//alert(word + " not in object yet. Array : " + wordsObject.length);
-					countObject.push(1);
-					var wordCount = countObject[wordsObject.indexOf(word)];
-					//alert(wordCount);
- 		   		$("#thetable").append("<tr><td>" + word + "</td><td id='" + word + "'> " + wordCount + "</td></tr>"); 
-					//+ countObject[wordsObject.indexOf(word)] "</td></tr>");
- 					//increase number by 1
- 						}
 
+function checkAnagram(original, guess) {
+	
+	var foundAt;
+	originalChars = original.split("");
+	guessChars = guess.split("");
+	
+	for (var i = 0; i < guessChars.length; i++) {
+		foundAt = originalChars.indexOf(guessChars[i]);
+		
+			// If the letter is present...
+			if (foundAt >= 0) {
+				delete originalChars[foundAt];
+			}
+			
+			// If the letter is absent...
+			else {
+				return false;
+			}
+		}
+	// If the loop ended, then all letters were present.
+	return true;
+	}
+
+function getNewWord() {
+
+			// Get the xml data from POST
+			$.post("getWord.php", "", function(data) { 
+
+				// Extract the word from XML response
+				var word = $(data).find('Word').children().text();
+
+				// Add word to list of words
+				originalWords.push(word);
+				
+				// Add the word to the table along with an empty cell for guesses related to it
+		   	$("#thetable").append("<tr><td><b>" + word + "</b></td><td id='" + word + "'></td></tr>"); 
+
+				currentWord = word;
 				 });
-				}
+			}
+				
+	// Makes it so that pressing enter submits the current word
+	$(document).keypress(function(e) {
+		    if(e.which == 13) {
+		        clientSideChecks();
+		    }
+			});
+				
+// function getNewWord() {
+// //			//alert("I work");
+// 			$.post("getWord.php", "", function(data) { 
+// 			
+// 				 var word = $(data).find('Word').children().text();
+// 	
+// 				 if(wordsObject.indexOf(word) != -1) {
+//  					//alert(word + " in wordsObject already.");
+// 					countObject[wordsObject.indexOf(word)] += 1;
+// 					var temp = $("#" + word).html();
+// 					$("#" + word).html(++temp);
+//  						}
+//  						//and set number to 1
+//  				
+// 				else {
+// 					wordsObject.push(word);
+// 					//alert(word + " not in object yet. Array : " + wordsObject.length);
+// 					countObject.push(1);
+// 					var wordCount = countObject[wordsObject.indexOf(word)];
+// 					//alert(wordCount);
+//  		   		$("#thetable").append("<tr><td>" + word + "</td><td id='" + word + "'> " + wordCount + "</td></tr>"); 
+// 					//+ countObject[wordsObject.indexOf(word)] "</td></tr>");
+//  					//increase number by 1
+//  						}
+// 
+// 				 });
+// 				}
 
 </script>
 
@@ -63,10 +112,10 @@ function requestWord() {
 <body>
 	<center>
 	<h1>Assignment 4</h1>
-	<button id="newword" onclick="requestWord()">Click here got a new word!</button><br><br>
-	<table id="thetable" border="1" style="width:50%"><tr><th>Original word</th><th>Anagrams</th></tr></table>
-	<input id="userinput" type="text" length="30"></input>
-	<p><button id="submit" onclick="requestWord()">Submit</button>
+	<button id="newword" onclick="getNewWord()">Click here got a new word!</button><br><br>
+	<table id="thetable" border="1" style="width:50%"><tr><th>Original word</th><th>Anagrams</th></tr></table><br>
+	<input id="userinput" type="text" length="30" autocomplete="off"></input>
+	<p><button id="submit" onclick="clientSideChecks()">Submit</button>
 
 	</center>
 </body>
