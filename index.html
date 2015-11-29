@@ -5,29 +5,54 @@
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<script type="text/javascript">
   var originalWords = new Array();
+	var correctAnagrams = new Array();
 	var guesses = new Array ();
 	var currentWord = "";
 	var mostRecentGuess = "";
+	var counter = 1;
 	
 function clientSideChecks() {
+				
+		if (currentWord == "") {
+			$("#errormsg").text("You must click the button above to get a new word first!");
+			$("#userinput").val("");
+			return false;
+		}
 		
-		// Test 1 (client): Can the word be made from those letters?
 		mostRecentGuess = $(userinput).val();
 	
+		if (mostRecentGuess == currentWord) {
+			$("#errormsg").text("A word is not an anagram of itself.");
+			$("#userinput").val("");
+			return false;
+		}
+	
+		if (mostRecentGuess == "") {
+			$("#errormsg").text("You didn't enter a guess.");
+			$("#userinput").val("");
+			return false;
+		}
+	
 		var isValid = checkAnagram(currentWord, mostRecentGuess);
-		
+
+		// Test 1 (client): Can the word be made from those letters?		
 		if (!isValid){
-			alert("That is not an anagram of " + currentWord);
+			$("#errormsg").text("That is not an anagram of \"" + currentWord + "\".");
+			$("#userinput").val("");
+			return false;
 		}
 		
+		if (correctAnagrams.indexOf(mostRecentGuess) != -1) {
+				$("#errormsg").text("You already guessed that word.");
+				$("#userinput").val("");
+				return false;
+		}
+	
 		else {
-			
+				return true;	
+				}
+	
 		}
-		
-		// Test 2 (client): Has the word already been added to the table?
-		
-		// Test 3 (server): Does the word exist in the dictionary?
-	}
 	
 
 function checkAnagram(original, guess) {
@@ -53,6 +78,34 @@ function checkAnagram(original, guess) {
 	return true;
 	}
 
+function checkWord() {
+
+				// Get the xml data from POST
+				$.post("checkWord.php", { guess: mostRecentGuess}, function(data) { 
+
+					// Extract the word from XML response
+					var response = $(data).find('Word').children().text();
+
+					if (response != mostRecentGuess) {
+						$("#errormsg").text("That word is not in the dictionary.");
+						$("#userinput").val("");
+						return false;
+					}
+					
+					// Add the correct guess to the list of anagrams
+					correctAnagrams.push(response);
+					//alert(correctAnagrams);
+					
+					// Add the anagram to the appropriate data cell
+			   	$("#" + currentWord).append("" + counter + ". " + response + "<br>"); 
+					$("#userinput").val("");
+					$("#errormsg").text("");
+					counter++;
+					return true;
+					 });
+					 return true;
+				}
+
 function getNewWord() {
 
 			// Get the xml data from POST
@@ -67,14 +120,21 @@ function getNewWord() {
 				// Add the word to the table along with an empty cell for guesses related to it
 		   	$("#thetable").append("<tr><td><b>" + word + "</b></td><td id='" + word + "'></td></tr>"); 
 
+				$("#errormsg").text("");
 				currentWord = word;
+				counter = 1;
+				correctAnagrams = new Array();
 				 });
 			}
 				
 	// Makes it so that pressing enter submits the current word
 	$(document).keypress(function(e) {
 		    if(e.which == 13) {
-		        clientSideChecks();
+		        if (clientSideChecks()) {
+							if (checkWord()) {
+								
+							}
+						}
 		    }
 			});
 				
@@ -111,12 +171,11 @@ function getNewWord() {
 </head>
 <body>
 	<center>
-	<h1>Assignment 4</h1>
-	<button id="newword" onclick="getNewWord()">Click here got a new word!</button><br><br>
-	<table id="thetable" border="1" style="width:50%"><tr><th>Original word</th><th>Anagrams</th></tr></table><br>
-	<input id="userinput" type="text" length="30" autocomplete="off"></input>
-	<p><button id="submit" onclick="clientSideChecks()">Submit</button>
-
+	<h1>The Anagram Game</h1>
+	<button id="newword" onclick="getNewWord()">Get a new word</button><br><br>
+	<table id="thetable" border="1" style="width:30%"><tr><th>Original word</th><th>Anagrams</th></tr></table><br>
+	<input id="userinput" type="text" length="30" autocomplete="off" autofocus="autofocus"></input><br>
+	<p><h4><span id="errormsg"></span></h4>
 	</center>
 </body>
 </html>
