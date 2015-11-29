@@ -10,11 +10,12 @@
 	var currentWord = "";
 	var mostRecentGuess = "";
 	var counter = 1;
+	var score = 0;
 	
 function clientSideChecks() {
 				
 		if (currentWord == "") {
-			$("#errormsg").text("You must click the button above to get a new word first!");
+	 		alert("You must click the button above to get a new word first!");
 			$("#userinput").val("");
 			return false;
 		}
@@ -22,13 +23,15 @@ function clientSideChecks() {
 		mostRecentGuess = $(userinput).val();
 	
 		if (mostRecentGuess == currentWord) {
-			$("#errormsg").text("A word is not an anagram of itself.");
+			alert("A word is not an anagram of itself.");
 			$("#userinput").val("");
+			$("#score").text("Score : " + --score);
+			
 			return false;
 		}
 	
 		if (mostRecentGuess == "") {
-			$("#errormsg").text("You didn't enter a guess.");
+			alert("You didn't enter a guess.");
 			$("#userinput").val("");
 			return false;
 		}
@@ -37,14 +40,16 @@ function clientSideChecks() {
 
 		// Test 1 (client): Can the word be made from those letters?		
 		if (!isValid){
-			$("#errormsg").text("That is not an anagram of \"" + currentWord + "\".");
+			alert("That is not an anagram of \"" + currentWord + "\".");
 			$("#userinput").val("");
+			$("#score").text("Score : " + --score);
 			return false;
 		}
 		
 		if (correctAnagrams.indexOf(mostRecentGuess) != -1) {
-				$("#errormsg").text("You already guessed that word.");
+				alert("You already guessed that word.");
 				$("#userinput").val("");
+				$("#score").text("Score : " + --score);
 				return false;
 		}
 	
@@ -87,8 +92,9 @@ function checkWord() {
 					var response = $(data).find('Word').children().text();
 
 					if (response != mostRecentGuess) {
-						$("#errormsg").text("That word is not in the dictionary.");
+						alert("That word is not in the dictionary.");
 						$("#userinput").val("");
+						$("#score").text("Score : " + --score);
 						return false;
 					}
 					
@@ -96,10 +102,12 @@ function checkWord() {
 					correctAnagrams.push(response);
 					//alert(correctAnagrams);
 					
+					score += calcScore(response);
+					$("#score").text("Score : " + score);
+					
 					// Add the anagram to the appropriate data cell
 			   	$("#" + currentWord).append("" + counter + ". " + response + "<br>"); 
 					$("#userinput").val("");
-					$("#errormsg").text("");
 					counter++;
 					return true;
 					 });
@@ -120,12 +128,26 @@ function getNewWord() {
 				// Add the word to the table along with an empty cell for guesses related to it
 		   	$("#thetable").append("<tr><td><b>" + word + "</b></td><td id='" + word + "'></td></tr>"); 
 
-				$("#errormsg").text("");
+				$("#score").text("Score : 0");
+				score = 0;
 				currentWord = word;
 				counter = 1;
 				correctAnagrams = new Array();
 				 });
 			}
+				
+	function calcScore(correctWord) {
+		var tempScore = 0;
+		var anagramSplit = correctWord.split("");
+		for(var i = 0; i < anagramSplit.length; i++) {
+			tempScore += i;
+		}
+		if (mostRecentGuess.length == currentWord.length) {
+			alert("BONUS: All letters used! +100 Points");
+			tempScore += 100;
+		}
+		return tempScore;
+	}
 				
 	// Makes it so that pressing enter submits the current word
 	$(document).keypress(function(e) {
@@ -138,44 +160,16 @@ function getNewWord() {
 		    }
 			});
 				
-// function getNewWord() {
-// //			//alert("I work");
-// 			$.post("getWord.php", "", function(data) { 
-// 			
-// 				 var word = $(data).find('Word').children().text();
-// 	
-// 				 if(wordsObject.indexOf(word) != -1) {
-//  					//alert(word + " in wordsObject already.");
-// 					countObject[wordsObject.indexOf(word)] += 1;
-// 					var temp = $("#" + word).html();
-// 					$("#" + word).html(++temp);
-//  						}
-//  						//and set number to 1
-//  				
-// 				else {
-// 					wordsObject.push(word);
-// 					//alert(word + " not in object yet. Array : " + wordsObject.length);
-// 					countObject.push(1);
-// 					var wordCount = countObject[wordsObject.indexOf(word)];
-// 					//alert(wordCount);
-//  		   		$("#thetable").append("<tr><td>" + word + "</td><td id='" + word + "'> " + wordCount + "</td></tr>"); 
-// 					//+ countObject[wordsObject.indexOf(word)] "</td></tr>");
-//  					//increase number by 1
-//  						}
-// 
-// 				 });
-// 				}
-
 </script>
 
 </head>
-<body>
+	<body>
 	<center>
-	<h1>The Anagram Game</h1>
-	<button id="newword" onclick="getNewWord()">Get a new word</button><br><br>
-	<table id="thetable" border="1" style="width:30%"><tr><th>Original word</th><th>Anagrams</th></tr></table><br>
-	<input id="userinput" type="text" length="30" autocomplete="off" autofocus="autofocus"></input><br>
-	<p><h4><span id="errormsg"></span></h4>
+		<h1>The Anagram Game</h1>
+		<button id="newword" onclick="getNewWord()">Get a new word</button><br><br>
+		<table id="thetable" border="1" style="width:30%"><tr><th>Original word</th><th>Anagrams</th></tr></table><br>
+		<input id="userinput" type="text" length="30" autocomplete="off" autofocus="autofocus"></input><br>
+		<p><h4><span id="score">Score: 0</span></h4>
 	</center>
-</body>
+	</body>
 </html>
