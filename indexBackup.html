@@ -8,16 +8,13 @@
 	var correctAnagrams = new Array();
 	var guesses = new Array ();
 	var currentWord = "";
-	var currentWordTable = ""
-	var currentWordBox = ""
 	var mostRecentGuess = "";
-	var firstLoad = 1;
 	var counter = 1;
-	var numWordsAttempted = 1;
+	var numWordsAttempted = 0;
 	var score = 0;
 	
 function clientSideChecks() {
-	
+				
 		if (currentWord == "") {
 	 		alert("You must click the button above to get a new word first!");
 			$("#userinput").val("");
@@ -88,7 +85,7 @@ function checkAnagram(original, guess) {
 	}
 
 function checkWord() {
-				
+
 				// Get the xml data from POST
 				$.post("checkWord.php", { guess: mostRecentGuess}, function(data) { 
 
@@ -119,66 +116,26 @@ function checkWord() {
 				}
 
 function getNewWord() {
-	
-		if (firstLoad) {
-				$('#score').css("visibility", "visible");
-				$("#userinput").css("visibility", "visible");
-				firstLoad = 0;
-			}
-			
+
 			// Get the xml data from POST
-			$.post("getWord.php", "", function(data) {
-				
-				if (currentWord) {
-					$('#container').append("<p><h4>Final Score: " + score + "</h4>");
-					
-					switch(true) {
-						case(score < 10):
-							$('#container').append("<span class='grade' style='color: red'>Pathetic!</span>");
-							break;
-						case(score < 20):
-							$('#container').append("<span class='grade' style='color: orange'>Try harder!</span>");
-							break;
-						case(score < 30):
-							$('#container').append("<span class='grade' style='color: yellow'>Not bad!</span>");
-							break;
-						case(score < 40):
-							$('#container').append("<span class='grade' style='color: green'>Good job!</span>");
-							break;
-						case(score < 50):
-							$('#container').append("<span class='grade' style='color: blue'>Great work!!</span>");
-							break;
-						case(score < 50):
-							$('#container').append("<span class='grade' style='color: purple'>Wow!!!</span>");
-							break;
-						case(score < 60):
-							$('#container').append("<span class='grade' style='color: red'>YOU HAVE BEATEN THE GAME, NOW LOG OFF</span><br>");
-							break;
-						}
-						
-					}
-						
+			$.post("getWord.php", "", function(data) { 
+
 				// Extract the word from XML response
 				var word = $(data).find('Word').children().text();
-				currentWord = word;
-				currentWordTable = currentWord + "table";
-				currentWordBox = currentWord + "box";
-				numWordsAttempted++;
 
-				// Add word to the array of words
+				// Add word to list of words
 				originalWords.push(word);
-			
-				// Create a rounded box and a table for the new word
-				$('#container').append("<br><br><div class='roundedbox' id='" + currentWordBox + "'>");
-				$('#' + currentWordBox).append("<table id='" + currentWordTable + "' class='wordtable' border='1'><tr><th>Original word</th><th>Anagrams</th></tr><br>");
+				$('body').append($('</div>'));
+				$('body').append($('<t'));
 				
 				// Add the word to the table along with an empty cell for guesses related to it
-		   	$("#" + currentWordTable).append("<tr><td><b>" + word + "</b></td><td id='" + word + "'></td></tr></table>"); 
+		   	$("#wordtable").append("<tr><td><b>" + word + "</b></td><td id='" + word + "'></td></tr>"); 
 
 				$("#score").text("Score : 0");
 				score = 0;
+				currentWord = word;
 				counter = 1;
-				numWordsAttempted += 1;
+				numWordsAttempted++;
 				correctAnagrams = new Array();
 				 });
 			}
@@ -213,12 +170,13 @@ function getNewWord() {
 	<body>
 	<center>
 		<img src="AnagramGame.png" align="center"><br>
+		<button id="newword" onclick="getNewWord()">Get a new word</button><br><br>
 		<div id="container">
-		</div id="container">
-		<br>
-		<input id='userinput' type='text' length='30' autocomplete="off" autofocus="autofocus"></input><br>
+		<div id="roundedbox">
+		<table id="wordtable" border="1" style="width:100%"><tr><th>Original word</th><th>Anagrams</th></tr></table><br>
+		<input id="userinput" type="text" length="30" autocomplete="off" autofocus="autofocus"></input><br>
 		<p><h4><span id="score">Score: 0</span></h4>
-		<button id="newword" onclick="getNewWord()">Try a new word</button><br>
+		</div>
 	</center>
 	</body>
 </html>
