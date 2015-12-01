@@ -133,26 +133,32 @@ function getNewWord() {
 					$('#container').append("<p><h4>Final Score: " + score + "</h4>");
 					
 					switch(true) {
-						case(score < 10):
+						case(score < 20):
 							$('#container').append("<span class='grade' style='color: red'>Pathetic!</span>");
 							break;
-						case(score < 20):
+						case(score < 40):
 							$('#container').append("<span class='grade' style='color: orange'>Try harder!</span>");
 							break;
-						case(score < 30):
+						case(score < 70):
 							$('#container').append("<span class='grade' style='color: yellow'>Not bad!</span>");
 							break;
-						case(score < 40):
+						case(score < 100):
 							$('#container').append("<span class='grade' style='color: green'>Good job!</span>");
 							break;
-						case(score < 50):
+						case(score < 150):
 							$('#container').append("<span class='grade' style='color: blue'>Great work!!</span>");
 							break;
-						case(score < 50):
+						case(score < 200):
 							$('#container').append("<span class='grade' style='color: purple'>Wow!!!</span>");
 							break;
-						case(score < 60):
-							$('#container').append("<span class='grade' style='color: red'>YOU HAVE BEATEN THE GAME, NOW LOG OFF</span><br>");
+						case(score < 300):
+							$('#container').append("<span class='grade' style='color: purple'>YOUR SKILLS RIVAL GOD HIMSELF, NOW LOG OFF</span><br>");
+							break;
+						case(score < 500):
+							$('#container').append("<span class='grade' style='color: purple'>YOU ARE SO GOOD THAT YOU DISGUST ME</span><br>");
+							break;
+						default:
+							$('#container').append("<span class='grade' style='color: purple'>YOU CANNOT POSSIBLY BE SERIOUS</span><br>");
 							break;
 						}
 						
