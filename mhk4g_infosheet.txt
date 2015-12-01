@@ -29,7 +29,7 @@ Does your program run without error?: Yes
 Additional comments (including problems and extra credit):
 
   Extra credit: Significantly improved design
-  Extra credit: Added scoring. 
+  Extra credit: Added scoring:
                   - Score varies by found word length
                   - Bonus for using all letters
                   - Minus one point for incorrect guesses
