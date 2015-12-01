@@ -1,0 +1,89 @@
+body {
+	font-family: Verdana, sans-serif; 
+	font-size: 14px;
+    text-align: center;
+}
+
+table {
+	border: 0px;
+	
+}
+
+h2 {
+	font-family:"Helvetica",sans-serif;
+	font-weight:normal;
+	font-style:normal;
+	font-size:13px;
+    color:DarkBlue;
+}
+
+th {
+	padding-left: 24px;
+	padding-right: 24px;
+	padding-top: 12px;
+	padding-bottom: 6px;
+	border-color: white;
+	border-width: 6px;
+	border-style: solid;
+    color: Indigo;
+		font-family:"Zapfino";
+		font-size: 16px;
+}
+
+td {
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 12px;
+	padding-bottom: 12px;
+    font-weight:normal;
+    font-size:13px;
+		border: 0px;
+		background-color: White;
+		text-align: center;
+}
+
+.title {
+	font-family:"Helvetica",sans-serif;
+	font-weight:bold;
+	font-size: 22px;
+  color: MidnightBlue;
+	vertical-align: middle;
+	padding-top:2px;
+}
+
+.wordtable {
+	vertical-align: middle;
+  border-collapse:collapse;
+	background: #DEDBEF;
+	border: 8px;
+	border-color: white;
+  margin-left:auto;
+  margin-right:auto;
+	vertical-align: middle;
+}
+
+.roundedbox {
+	border-radius: 25px;
+	border: 4px solid #DEDBEF;
+	width: 33%;
+	padding-top: 10px; 	
+	padding-bottom: 20px;
+	vertical-align: middle;
+}
+
+.grade {
+	font-size: 48px;
+	font-family: "Zapfino";
+}
+
+#score {
+	color: #BCB0CD;
+}
+
+#userinput {
+	visibility: hidden;
+}
+
+#score {
+	visibility: hidden;
+}

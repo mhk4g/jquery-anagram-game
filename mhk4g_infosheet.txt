@@ -1,0 +1,37 @@
+CS 4501 Assignment Information Sheet
+
+Spring 2015
+
+You must submit an information sheet with every assignment. Also be sure to submit all materials following the procedures described on the submission instructions page.
+
+Name: Matt Kauper   Assignment #: 4
+
+Program Due Date:   11/30/2015
+
+Handed in Date:     11/30/2015 (on time)
+
+Source code file name(s):
+
+  index.html
+  getWord.php
+  checkWord.php
+  gameStyle.css
+
+Other file name(s) (if relevant):
+
+  AnagramGame.pressing
+  dictionary.txt
+  init.php
+  mhk4g_infosheet.txt
+
+Does your program run without error?: Yes
+
+Additional comments (including problems and extra credit):
+
+  Extra credit: Significantly improved design
+  Extra credit: Added scoring. 
+                  - Score varies by found word length
+                  - Bonus for using all letters
+                  - Minus one point for incorrect guesses
+                  - When user gets a new word, their final score is displayed
+                  - In addition to final score, a grade is given based on the score
